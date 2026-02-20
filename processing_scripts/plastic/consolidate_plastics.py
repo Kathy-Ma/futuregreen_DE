@@ -43,7 +43,7 @@ def consolidate_plastics():
         data_raw / "trashNet" / "plastic",
     ]
 
-    dest_dir = base_dir / "data" / "processed" / "plastics_consolidated"
+    dest_dir = base_dir / "data" / "processed" / "plastics"
     dest_dir.mkdir(parents=True, exist_ok=True)
 
     valid_extensions = {".jpg", ".jpeg", ".png", ".bmp", ".webp", ".tif", ".tiff"}
@@ -70,7 +70,7 @@ def consolidate_plastics():
 
             try:
                 with Image.open(file_path) as img:
-                    img = img.convert("RGB")
+                    img = img.convert("RGBA").convert("RGB")
                     new_name = f"plastic_{global_counter}.jpg"
                     img.save(dest_dir / new_name, "JPEG", quality=95)
                     global_counter += 1

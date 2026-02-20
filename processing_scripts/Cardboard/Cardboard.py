@@ -1,37 +1,23 @@
-"""
-consolidate_plastics.py
------------------------
-Consolidates all plastic sub-class images from data/raw into a single
-directory with consistent naming: plastic_1.jpg, plastic_2.jpg, ...
-
-Source datasets:
-  - TrashBox/plastic          (subfolders: plastic bags, bottles, containers, cups)
-  - garbageClassification/plastic
-  - recyclableAndHouseholdWaste  (multiple plastic_* subfolders)
-  - trashNet/plastic
-
-Output:
-  - data/processed/plastics_consolidated/plastic_N.jpg
-"""
-
 import os
 from pathlib import Path
 from PIL import Image
 
-def consolidate_plastics():
+def consolidate_cardboard():
     base_dir = Path(__file__).resolve().parents[2] 
     data_raw = base_dir / "data" / "raw"
     
     source_dirs = [
         data_raw / "TrashBox" / "cardboard",
 
-        data_raw / "cardboard",
+        data_raw / "trashNet" / "cardboard",
 
-        data_raw / "cardboard_boxes" / "default",
-        data_raw / "cardboard_boxes" / "real_world",
+        data_raw / "garbageClassification" / "cardboard",
 
-        data_raw / "cardboard_packaging" / "default",
-        data_raw / "cardboard_packaging" / "real_world"
+        data_raw / "recyclableAndHouseholdWaste" / "cardboard_boxes" / "default",
+        data_raw / "recyclableAndHouseholdWaste" / "cardboard_boxes" / "real_world",
+
+        data_raw / "recyclableAndHouseholdWaste" / "cardboard_packaging" / "default",
+        data_raw / "recyclableAndHouseholdWaste" / "cardboard_packaging" / "real_world"
     ]
 
     dest_dir = base_dir / "data" / "processed" / "cardboard"
@@ -61,8 +47,8 @@ def consolidate_plastics():
 
             try:
                 with Image.open(file_path) as img:
-                    img = img.convert("RGB")
-                    new_name = f"plastic_{global_counter}.jpg"
+                    img = img.convert("RGBA").convert("RGB")
+                    new_name = f"cardboard_{global_counter}.jpg"
                     img.save(dest_dir / new_name, "JPEG", quality=95)
                     global_counter += 1
             except Exception as exc:
@@ -76,4 +62,4 @@ def consolidate_plastics():
 
 
 if __name__ == "__main__":
-    consolidate_plastics()
+    consolidate_cardboard()
