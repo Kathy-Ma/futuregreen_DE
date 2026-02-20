@@ -1,5 +1,5 @@
 import os
-folder_path = r"C:\Users\meeri\Downloads\Metal\steel_food_cans\default"
+folder_path = r"C:\Users\meeri\FF Stuff\futuregreen_DE\data\processed\metal_renamed\waste_classification_renamed\steel_food_cans\real_world"
 for i in range(1, 251):
     old_name = f"image_{i}.png"
     new_i = i + 1250
