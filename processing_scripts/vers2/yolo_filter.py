@@ -5,8 +5,8 @@ from pathlib import Path
 from ultralytics import YOLO
 
 # ─── Configuration ────────────────────────────────────────────────────────────
-SOURCE_DIR  = r"data/processed/organic"
-TARGET_DIR  = r"data/processed/rejected/multiple"
+SOURCE_DIR  = r"data\processed\consolidated_raws"
+TARGET_DIR  = r"data\processed\dataset_vers2"
 
 YOLO_MODEL  = "yolov8n.pt"
 CONF        = 0.6

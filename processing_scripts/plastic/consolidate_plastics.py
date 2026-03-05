@@ -43,7 +43,7 @@ def consolidate_plastics():
         data_raw / "trashNet" / "plastic",
     ]
 
-    dest_dir = base_dir / "data" / "processed" / "plastics"
+    dest_dir = base_dir / "data" / "processed" / "plastic"
     dest_dir.mkdir(parents=True, exist_ok=True)
 
     valid_extensions = {".jpg", ".jpeg", ".png", ".bmp", ".webp", ".tif", ".tiff"}
