@@ -7,7 +7,7 @@ from PIL import Image
 
 # ─── Configuration ────────────────────────────────────────────────────────────
 SOURCE_DIR = Path(r"data\processed\consolidated_raws")
-TARGET_DIR = Path(r"data\processed\dataset_vers2")
+TARGET_DIR = Path(r"data\processed\dataset_vers3")
 
 SCRIPT_DIR = Path(__file__).parent
 YOLO_MODEL = SCRIPT_DIR / "yolov8n-waste-12cls-best.pt"
@@ -39,7 +39,7 @@ CLEAR_TARGET_BEFORE_RUN = False
 # Resolution filter – if True, crops smaller than MIN_RESOLUTION are rejected.
 # Set FILTER_MIN_RESOLUTION = False to disable this check entirely.
 FILTER_MIN_RESOLUTION = True
-MIN_RESOLUTION        = (250, 250)   # (min_width, min_height) in pixels
+MIN_RESOLUTION        = (50, 50)   # (min_width, min_height) in pixels
 # ──────────────────────────────────────────────────────────────────────────────
 
 
@@ -186,7 +186,14 @@ def main():
         return
 
     # ── Stats ─────────────────────────────────────────────────────────────────
-    stats = {"total": 0, "accepted": 0, "rejected": 0, "errors": 0}
+    stats = {
+        "total": 0,
+        "accepted": 0,
+        "rejected": 0,
+        "rejected_multi": 0,
+        "rejected_size": 0,
+        "errors": 0
+    }
     class_stats: dict[str, dict] = {}
 
     # ── Process each class ────────────────────────────────────────────────────
@@ -202,7 +209,14 @@ def main():
         if class_name not in accepted_counters:
             accepted_counters[class_name] = existing.get(class_name, 0) + 1
 
-        class_stats[class_name] = {"total": 0, "accepted": 0, "rejected": 0, "errors": 0}
+        class_stats[class_name] = {
+            "total": 0,
+            "accepted": 0,
+            "rejected": 0,
+            "rejected_multi": 0,
+            "rejected_size": 0,
+            "errors": 0
+        }
         class_out_dir = target_path / class_name
         class_out_dir.mkdir(parents=True, exist_ok=True)
 
@@ -231,9 +245,11 @@ def main():
                     dest     = rejected_path / new_name
                     shutil.copy2(str(img_path), str(dest))
                     print(f"  [REJECT] {img_path.name} → {new_name}  (objects={object_count})")
-                    rejected_counter                        += 1
-                    stats["rejected"]                       += 1
-                    class_stats[class_name]["rejected"]     += 1
+                    rejected_counter                          += 1
+                    stats["rejected"]                         += 1
+                    stats["rejected_multi"]                   += 1
+                    class_stats[class_name]["rejected"]       += 1
+                    class_stats[class_name]["rejected_multi"] += 1
 
                 else:
                     # ── ACCEPT: crop to bounding box, save in class folder ─────
@@ -264,9 +280,11 @@ def main():
                                     f"  [REJECT] {img_path.name} → {new_name}"
                                     f"  (crop {crop_w}x{crop_h} < {MIN_RESOLUTION[0]}x{MIN_RESOLUTION[1]})"
                                 )
-                                rejected_counter                        += 1
-                                stats["rejected"]                       += 1
-                                class_stats[class_name]["rejected"]     += 1
+                                rejected_counter                         += 1
+                                stats["rejected"]                        += 1
+                                stats["rejected_size"]                   += 1
+                                class_stats[class_name]["rejected"]      += 1
+                                class_stats[class_name]["rejected_size"] += 1
                                 continue
 
                         new_name = f"{class_name}_{accepted_counters[class_name]}.jpg"
@@ -288,19 +306,21 @@ def main():
                 class_stats[class_name]["errors"]   += 1
 
     # ── Final Report ──────────────────────────────────────────────────────────
-    print("\n" + "=" * 65)
+    print("\n" + "=" * 80)
     print("PROCESSING COMPLETE")
-    print("=" * 65)
+    print("=" * 80)
     print(f"{'Total processed':<25}: {stats['total']}")
     print(f"{'Total accepted':<25}: {stats['accepted']}")
     print(f"{'Total rejected':<25}: {stats['rejected']}")
+    print(f"{'  ├─ Multi-object':<25}: {stats['rejected_multi']}")
+    print(f"{'  └─ Size/Resolution':<25}: {stats['rejected_size']}")
     print(f"{'Total errors':<25}: {stats['errors']}")
     print()
-    print(f"{'Class':<15} {'Total':<8} {'Accepted':<10} {'Rejected':<10} {'Errors':<8}")
-    print("-" * 55)
+    print(f"{'Class':<15} {'Total':<8} {'Accepted':<10} {'Rejected':<10} {'Rej(Multi)':<12} {'Rej(Size)':<12} {'Errors':<8}")
+    print("-" * 80)
     for cls, s in class_stats.items():
-        print(f"{cls:<15} {s['total']:<8} {s['accepted']:<10} {s['rejected']:<10} {s['errors']:<8}")
-    print("=" * 65)
+        print(f"{cls:<15} {s['total']:<8} {s['accepted']:<10} {s['rejected']:<10} {s['rejected_multi']:<12} {s['rejected_size']:<12} {s['errors']:<8}")
+    print("=" * 80)
 
 
 if __name__ == "__main__":
