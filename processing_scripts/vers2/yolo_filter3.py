@@ -7,7 +7,7 @@ from PIL import Image
 
 # ─── Configuration ────────────────────────────────────────────────────────────
 SOURCE_DIR = Path(r"data\processed\consolidated_raws")
-TARGET_DIR = Path(r"data\processed\dataset_vers3")
+TARGET_DIR = Path(r"data\processed\dataset_vers3.2")
 
 SCRIPT_DIR = Path(__file__).parent
 YOLO_MODEL = SCRIPT_DIR / "yolov8n-waste-12cls-best.pt"
