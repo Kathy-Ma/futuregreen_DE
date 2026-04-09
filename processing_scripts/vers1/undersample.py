@@ -32,7 +32,7 @@ import shutil
 # Configuration
 # ---------------------------------------------------------------------------
 
-SOURCE_DIR = os.path.join("data", "processed", "dataset_vers1")
+SOURCE_DIR = os.path.join("data", "processed", "dataset_vers3")
 
 # Destination for randomly removed images — lives inside the existing
 # `rejected/` folder so it is automatically skipped on future runs.

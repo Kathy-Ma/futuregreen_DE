@@ -46,8 +46,8 @@ CLASS_THRESHOLDS = {
 CROP_PADDING = 10
 
 # Resolution thresholds
-MIN_INPUT_RESOLUTION = (250, 250)   # (min_width, min_height) for the raw input image
-MIN_CROP_RESOLUTION  = (112, 112)   # (min_width, min_height) for the cropped result
+MIN_INPUT_RESOLUTION = (120, 120)   # (min_width, min_height) for the raw input image
+MIN_CROP_RESOLUTION  = (120, 120)   # (min_width, min_height) for the cropped result
 # ──────────────────────────────────────────────────────────────────────────────
 
 
